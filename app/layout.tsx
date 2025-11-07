@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import Link from "next/link";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -24,10 +25,34 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+    <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased
+        sm:mx-5 h-screen flex flex-col lg:gap-15 xl:gap-0`}
       >
+    <header className="w-full h-[60px]"> {/* 1. Full-width outer container with background and fixed height */}
+        <div className="
+    w-full max-w-5xl mx-auto
+    px-4
+    md:px-8
+    lg:px-12
+    xl:px-16
+    2xl:px-0
+    flex items-center justify-between h-full
+  ">
+            <Link href="/" className="font-bold text-2xl text-white">
+                0x06 maaks.me
+            </Link>
+
+        </div>
+    </header>
+    <main className={"flex-1 max-w-3xl mx-auto w-full my-10"}>
         {children}
+    </main>
+    <footer className="mt-auto flex items-center justify-center h-12">
+        <a className={"text-[#9b9c9d]"}>
+            &copy; {new Date().getFullYear()} maaks.me
+        </a>
+    </footer>
       </body>
     </html>
   );
