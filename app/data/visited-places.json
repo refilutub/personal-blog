@@ -1,0 +1,50 @@
+[
+  {
+    "countryCode": "fr",
+    "regions": ["fr-idf"]
+  },
+  {
+    "countryCode": "pl",
+    "regions": ["pl-mz", "pl-pm", "pl-ma", "pl-ds"]
+  },
+  {
+    "countryCode": "ua",
+    "regions": ["ua-kv", "ua-kc", "ua-lv", "ua-zh", "ua-my", "ua-if", "ua-vo", "ua-zt", "ua-ck", "ua-vi"]
+  },
+  {
+    "countryCode": "at",
+    "regions": ["at-wi"]
+  },
+  {
+    "countryCode": "cz",
+    "regions": ["cz-ck", "cz-2293", "cz-vk", "cz-sk"]
+  },
+  {
+    "countryCode": "dk",
+    "regions": ["dk-6325"]
+  },
+  {
+    "countryCode": "no",
+    "regions": ["no-os"]
+  },
+  {
+    "countryCode": "se",
+    "regions": ["se-sn"]
+  },
+  {
+    "countryCode": "it",
+    "regions": ["it-34", "it-25", "it-52", "it-62"]
+  },
+  {
+    "countryCode": "ro",
+    "regions": ["ro-bi"]
+  },
+  {
+    "countryCode": "md",
+    "regions": ["md-cv"]
+  },
+  {
+    "countryCode": "va",
+    "regions": []
+  }
+]

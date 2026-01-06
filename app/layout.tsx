@@ -29,23 +29,23 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased
         sm:mx-5 h-screen flex flex-col lg:gap-15 xl:gap-0`}
       >
-    <header className="w-full h-[60px]"> {/* 1. Full-width outer container with background and fixed height */}
+    <header className="w-full h-[60px]">
         <div className="
-    w-full max-w-5xl mx-auto
-    px-4
-    md:px-8
-    lg:px-12
-    xl:px-16
-    2xl:px-0
-    flex items-center justify-between h-full
-  ">
+            w-full max-w-5xl mx-auto
+            px-4
+            md:px-8
+            lg:px-12
+            xl:px-16
+            2xl:px-0
+            flex items-center justify-between h-full
+        ">
             <Link href="/" className="font-bold text-2xl text-white">
                 0x06 maaks.me
             </Link>
 
         </div>
     </header>
-    <main className={"flex-1 max-w-3xl mx-auto w-full my-10"}>
+    <main className="flex-1 w-full mx-auto flex flex-col items-center overflow-hidden min-h-0">
         {children}
     </main>
     <footer className="mt-auto flex items-center justify-center h-12">
