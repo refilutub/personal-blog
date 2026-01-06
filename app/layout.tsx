@@ -27,7 +27,7 @@ export default function RootLayout({
     <html lang="en">
     <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased
-        sm:mx-5 h-screen flex flex-col lg:gap-15 xl:gap-0`}
+        sm:mx-5 h-screen flex flex-col xl:gap-0`}
       >
     <header className="w-full h-[60px] relative z-50">
         <div className="

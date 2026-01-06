@@ -64,7 +64,6 @@ const MapChart = ({ mapData: initialMapData, visitedPlaces }: MapChartProps) => 
         if (view.type === 'country') {
             setView({ type: 'world', title: '' });
         } else {
-            // Center on Europe
             const chart = chartRef.current?.chart;
             if (chart) {
                 const mapView = (chart as any).mapView;
@@ -79,7 +78,6 @@ const MapChart = ({ mapData: initialMapData, visitedPlaces }: MapChartProps) => 
     const handleZoomIn = useCallback(() => {
         const chart = chartRef.current?.chart;
         if (chart && typeof (chart as any).mapZoom === 'function') {
-            // mapZoom with value < 1 zooms in
             (chart as any).mapZoom(0.5);
         }
     }, []);
@@ -87,7 +85,6 @@ const MapChart = ({ mapData: initialMapData, visitedPlaces }: MapChartProps) => 
     const handleZoomOut = useCallback(() => {
         const chart = chartRef.current?.chart;
         if (chart && typeof (chart as any).mapZoom === 'function') {
-            // mapZoom with value > 1 zooms out
             (chart as any).mapZoom(2);
         }
     }, []);
@@ -108,7 +105,6 @@ const MapChart = ({ mapData: initialMapData, visitedPlaces }: MapChartProps) => 
                 height: chartHeight || '100%',
                 events: {
                     load: function() {
-                        // Ensure mapView is accessible after chart loads
                     }
                 }
             },
