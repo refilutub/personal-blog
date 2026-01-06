@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import HighchartsReact from 'highcharts-react-official';
 import Highcharts from './highcharts-config';
 import { MapChartProps, ViewState } from './MapChart.types';
@@ -8,6 +8,23 @@ import { MapChartProps, ViewState } from './MapChart.types';
 const MapChart = ({ mapData: initialMapData, visitedPlaces }: MapChartProps) => {
     const [view, setView] = useState<ViewState>({ type: 'world', title: '' });
     const [isLoading, setIsLoading] = useState(false);
+    const [chartHeight, setChartHeight] = useState<number | null>(null);
+    const chartRef = useRef<HighchartsReact.RefObject | null>(null);
+
+    useEffect(() => {
+        const updateHeight = () => {
+            setChartHeight(window.innerHeight);
+        };
+
+        updateHeight();
+        window.addEventListener('resize', updateHeight);
+        window.addEventListener('orientationchange', updateHeight);
+
+        return () => {
+            window.removeEventListener('resize', updateHeight);
+            window.removeEventListener('orientationchange', updateHeight);
+        };
+    }, []);
 
     const worldData = useMemo(() => {
         return visitedPlaces.map(p => [p.countryCode, 1] as [string, number]);
@@ -44,8 +61,36 @@ const MapChart = ({ mapData: initialMapData, visitedPlaces }: MapChartProps) => 
     };
 
     const handleBack = () => {
-        setView({ type: 'world', title: '' });
+        if (view.type === 'country') {
+            setView({ type: 'world', title: '' });
+        } else {
+            // Center on Europe
+            const chart = chartRef.current?.chart;
+            if (chart) {
+                const mapView = (chart as any).mapView;
+                if (mapView && typeof mapView.setView === 'function') {
+                    // Center on Europe (lon, lat, zoom)
+                    mapView.setView(null, [20, 50], 4);
+                }
+            }
+        }
     };
+
+    const handleZoomIn = useCallback(() => {
+        const chart = chartRef.current?.chart;
+        if (chart && typeof (chart as any).mapZoom === 'function') {
+            // mapZoom with value < 1 zooms in
+            (chart as any).mapZoom(0.5);
+        }
+    }, []);
+
+    const handleZoomOut = useCallback(() => {
+        const chart = chartRef.current?.chart;
+        if (chart && typeof (chart as any).mapZoom === 'function') {
+            // mapZoom with value > 1 zooms out
+            (chart as any).mapZoom(2);
+        }
+    }, []);
 
     const options: Highcharts.Options = useMemo(() => {
         const isWorld = view.type === 'world';
@@ -60,7 +105,12 @@ const MapChart = ({ mapData: initialMapData, visitedPlaces }: MapChartProps) => 
                 spacing: [10,10,10,10],
                 renderTo: 'container',
                 reflow: true,
-                height: '100%',
+                height: chartHeight || '100%',
+                events: {
+                    load: function() {
+                        // Ensure mapView is accessible after chart loads
+                    }
+                }
             },
             title: { text: view.title },
             legend: { enabled: false },
@@ -69,11 +119,11 @@ const MapChart = ({ mapData: initialMapData, visitedPlaces }: MapChartProps) => 
                 enableButtons: false,
                 enableMouseWheelZoom: true,
             },
-            mapView: isWorld ? {
+            mapView: {
                 projection: { name: 'WebMercator' },
-                center: [20, 40],
-                zoom: 3.2,
-            } : undefined,
+                center: isWorld ? [20, 40] : undefined,
+                zoom: isWorld ? 3.2 : undefined,
+            },
             series: [{
                 type: 'map',
                 data: seriesData,
@@ -101,21 +151,45 @@ const MapChart = ({ mapData: initialMapData, visitedPlaces }: MapChartProps) => 
                 pointFormat: '<b>{point.name}</b>'
             }
         };
-    }, [view, initialMapData, worldData, getRegionData]);
+    }, [view, initialMapData, worldData, getRegionData, chartHeight]);
 
     return (
-        <div className="relative w-full h-full overflow-hidden">
-            {view.type === 'country' && (
+        <div className="relative w-full h-full overflow-hidden" style={{ height: '100%', width: '100%' }}>
+            <div className="absolute bottom-16 right-4 z-50 flex flex-col gap-1.5">
+                <button
+                    onClick={handleZoomIn}
+                    className="w-6 h-6 rounded-lg bg-transparent border border-white/30 hover:border-white/60 hover:bg-white/10 transition-all flex items-center justify-center backdrop-blur-sm"
+                    aria-label="Zoom in"
+                >
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                </button>
+                <button
+                    onClick={handleZoomOut}
+                    className="w-6 h-6 rounded-lg bg-transparent border border-white/30 hover:border-white/60 hover:bg-white/10 transition-all flex items-center justify-center backdrop-blur-sm"
+                    aria-label="Zoom out"
+                >
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                </button>
                 <button
                     onClick={handleBack}
                     disabled={isLoading}
-                    className="absolute top-2 left-2 z-50 px-3 py-2 bg-yellow-400 text-black rounded font-bold shadow-md hover:bg-yellow-300 transition-colors"
+                    className="w-6 h-6 rounded-lg bg-transparent border border-white/30 hover:border-white/60 hover:bg-white/10 transition-all flex items-center justify-center backdrop-blur-sm"
+                    aria-label="Home"
                 >
-                    ← Back to World
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                        <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                    </svg>
                 </button>
-            )}
+            </div>
 
             <HighchartsReact
+                ref={chartRef}
                 key={view.type + (view.type === 'country' ? view.countryCode : '')}
                 highcharts={Highcharts}
                 constructorType={'mapChart'}

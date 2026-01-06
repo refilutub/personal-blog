@@ -29,7 +29,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased
         sm:mx-5 h-screen flex flex-col lg:gap-15 xl:gap-0`}
       >
-    <header className="w-full h-[60px]">
+    <header className="w-full h-[60px] relative z-50">
         <div className="
             w-full max-w-5xl mx-auto
             px-4
@@ -48,7 +48,7 @@ export default function RootLayout({
     <main className="flex-1 w-full mx-auto flex flex-col items-center overflow-hidden min-h-0">
         {children}
     </main>
-    <footer className="mt-auto flex items-center justify-center h-12">
+    <footer className="mt-auto flex items-center justify-center h-12 relative z-50">
         <a className={"text-[#9b9c9d]"}>
             &copy; {new Date().getFullYear()} maaks.me
         </a>

@@ -12,7 +12,7 @@ import visitedPlaces from '@/app/data/visited-places.json';
 
 export default function BeenTo() {
     return (
-        <div className="relative w-full sm:w-[90vw] h-full flex-1 min-h-0 left-1/2 -translate-x-1/2">
+        <div className="fixed inset-0 w-screen h-screen z-0" style={{ height: '100dvh' }}>
             <MapChart
                 mapData={mapData}
                 visitedPlaces={visitedPlaces}
